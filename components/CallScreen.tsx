@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from "react";
 import {StyleSheet, Text, View, Button} from "react-native";
 
 //The package I imported for this
-import {RTCView} from "react-native-webrtc";
+import Video from "react-native-video";
 
 //The stylesheet for this component
 import "./CallScreen.css";
@@ -40,6 +40,13 @@ const VideoCallScreen: React.FC = () => {
         generateTranscript(transcript);
     }, [transcript, generateTranscript]);
 
+    const joinGoogleMeet = useCallback(() => {
+        //Placeholder for joining a google meet
+        //This is where the user would join the google meet
+        console.log("Joining Google Meet");
+        handleBeginCall();
+    }, [handleBeginCall]);
+
     // Function to handle the end of a call
     const handleEndCall = useCallback(() => {
         //This is where the call would be ended
@@ -55,17 +62,20 @@ const VideoCallScreen: React.FC = () => {
     //This is the useEffect hook that will run when the component mounts
     useEffect(() => {
         //This is where the call would be started
-        handleBeginCall();
-    }, [handleBeginCall]); //We put an empty dependency array to make sure this hook only runs once
+        joinGoogleMeet();
+    }, [joinGoogleMeet]); //We put an empty dependency array to make sure this hook only runs once
 
     return (
         <View style={styles.container}>
             {callInProgress ? ( //Ternary operator to check if the call is in progress
                 <>
-                    <RTCView //Placeholder for the call stream
+                    <Video //Placeholder for the call stream
                         style={styles.callStream}
-                        objectFit="cover"
-                        streamURL={"https://example.com/stream"}
+                        //Placeholder video. we would put the google meet stream here
+                        source={{uri: "https://www.w3schools.com/html/mov_bbb.mp4"}}
+                        muted={isMuted}
+                        resizeMode="cover"
+                        repeat={true}
                     />
                     <Text style={styles.transcript}>{transcript}</Text>
                     <View style={styles.buttons}>

@@ -17,6 +17,7 @@ import {
     Text,
     useColorScheme,
     View,
+    Alert,
 } from "react-native";
 
 import {
@@ -26,6 +27,24 @@ import {
     LearnMoreLinks,
     ReloadInstructions,
 } from "react-native/Libraries/NewAppScreen";
+
+//Using the packages I imported for navigation
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from "@react-navigation/stack";
+
+
+//The callscreen component
+import CallScreen from "./components/CallScreen";
+
+// Log global errors
+ErrorUtils.setGlobalHandler((error, isFatal) => {
+    if (isFatal) {
+        Alert.alert("Fatal Error", `${error.name}: ${error.message}`);
+        console.log("Oops. Error:", `${error.name}: ${error.message}`); // Fatal errors
+    } else {
+        console.log(error); // Non-fatal errors
+    }
+});
 
 const Section: React.FC<
   PropsWithChildren<{
@@ -57,7 +76,9 @@ const Section: React.FC<
     );
 };
 
-const App = () => {
+const Stack = createStackNavigator();
+
+const App: React.FC = () => {
     const isDarkMode = useColorScheme() === "dark";
 
     const backgroundStyle = {
@@ -65,36 +86,42 @@ const App = () => {
     };
 
     return (
-        <SafeAreaView style={backgroundStyle}>
-            <StatusBar
-                barStyle={isDarkMode ? "light-content" : "dark-content"}
-                backgroundColor={backgroundStyle.backgroundColor}
-            />
-            <ScrollView
-                contentInsetAdjustmentBehavior="automatic"
-                style={backgroundStyle}>
-                <Header />
-                <View
-                    style={{
-                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                    }}>
-                    <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-                    </Section>
-                    <Section title="See Your Changes">
-                        <ReloadInstructions />
-                    </Section>
-                    <Section title="Debug">
-                        <DebugInstructions />
-                    </Section>
-                    <Section title="Learn More">
-            Read the docs to discover what to do next:
-                    </Section>
-                    <LearnMoreLinks />
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+        //Put the navigation container here
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="CallScreen" component={CallScreen} />
+            </Stack.Navigator>
+            <SafeAreaView style={backgroundStyle}>
+                <StatusBar
+                    barStyle={isDarkMode ? "light-content" : "dark-content"}
+                    backgroundColor={backgroundStyle.backgroundColor}
+                />
+                <ScrollView
+                    contentInsetAdjustmentBehavior="automatic"
+                    style={backgroundStyle}>
+                    <Header />
+                    <View
+                        style={{
+                            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                        }}>
+                        <Section title="Step One">
+                Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+                screen and then come back to see your edits.
+                        </Section>
+                        <Section title="See Your Changes">
+                            <ReloadInstructions />
+                        </Section>
+                        <Section title="Debug">
+                            <DebugInstructions />
+                        </Section>
+                        <Section title="Learn More">
+                Read the docs to discover what to do next:
+                        </Section>
+                        <LearnMoreLinks />
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </NavigationContainer>
     );
 };
 
