@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useCallback} from "react";
-import {StyleSheet, Text, View, Button} from "react-native";
+import {StyleSheet, Text, View, Button, PermissionsAndroid, Platform} from "react-native";
 
 //The package I imported for this
 import Video from "react-native-video";
 
 //The stylesheet for this component
 import "./CallScreen.css";
+
+import CameraComponent from "./CameraComponent";
 
 //This is the call screen component
 const VideoCallScreen: React.FC = () => {
@@ -62,6 +64,30 @@ const VideoCallScreen: React.FC = () => {
     //This is the useEffect hook that will run when the component mounts
     useEffect(() => {
         //This is where the call would be started
+        //Get camera permission for android
+        async() => {
+            if(Platform.OS === "android"){
+                try {
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.CAMERA,
+                        {
+                            title: "Permission for Camera",
+                            message: "This app needs access to your camera",
+                            buttonNeutral: "Ask Me Later",
+                            buttonNegative: "Cancel",
+                            buttonPositive: "Ok",
+                        }
+                    );
+                    if(granted === PermissionsAndroid.RESULTS.GRANTED){
+                        console.log("Camera access granted");
+                    } else {
+                        console.log("Camera permission denied");
+                    }
+                } catch(e){
+                    console.log(e);
+                }
+            }
+        };
         joinGoogleMeet();
     }, [joinGoogleMeet]); //We put an empty dependency array to make sure this hook only runs once
 
@@ -69,6 +95,7 @@ const VideoCallScreen: React.FC = () => {
         <View style={styles.container}>
             {callInProgress ? ( //Ternary operator to check if the call is in progress
                 <>
+                    <CameraComponent />
                     <Video //Placeholder for the call stream
                         style={styles.callStream}
                         //Placeholder video. we would put the google meet stream here
